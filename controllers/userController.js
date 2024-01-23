@@ -1,7 +1,7 @@
 const User = require("../models/user");
 /**
  *
- * @returns {PromiseArray<User>}
+ * @returns {Promise<User[]>}
  */
 const getUsers = async () => {
     const data = await User.findAll({});
