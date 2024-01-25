@@ -9,3 +9,18 @@
 2024-01-25 20:19:56:1956 debug: Example app listening on port 3000!
 2024-01-25 20:20:02:202 http: GET / 200 15 - 2.195 ms
 
+2024-01-25 20:30:27:3027 debug: Example app listening on port 3000!
+2024-01-25 20:30:40:3040 http: GET /api-docs 301 183 - 3.487 ms
+
+2024-01-25 20:30:40:3040 http: GET /api-docs/ 200 3106 - 1.941 ms
+
+2024-01-25 20:30:40:3040 http: GET /api-docs/swagger-ui-init.js 200 29209 - 0.570 ms
+
+2024-01-25 20:30:40:3040 http: GET /api-docs/swagger-ui.css 200 152041 - 8.716 ms
+
+2024-01-25 20:30:40:3040 http: GET /api-docs/swagger-ui-standalone-preset.js 200 230768 - 7.911 ms
+
+2024-01-25 20:30:40:3040 http: GET /api-docs/swagger-ui-bundle.js 200 1400489 - 8.071 ms
+
+2024-01-25 20:30:40:3040 http: GET /api-docs/favicon-32x32.png 200 628 - 1.074 ms
+
