@@ -1,1 +1,11 @@
 2024-01-25 20:16:36:1636 debug: Example app listening on port 3000!
+2024-01-25 20:18:49:1849 debug: Example app listening on port 3000!
+2024-01-25 20:19:04:194 http: GET / 200 12 - 2.454 ms
+
+2024-01-25 20:19:11:1911 error: Not Found
+2024-01-25 20:19:11:1911 error: Not Found
+2024-01-25 20:19:11:1911 http: GET /favicon.ico 404 35 - 3.712 ms
+
+2024-01-25 20:19:56:1956 debug: Example app listening on port 3000!
+2024-01-25 20:20:02:202 http: GET / 200 15 - 2.195 ms
+
