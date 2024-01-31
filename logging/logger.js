@@ -43,7 +43,7 @@ const transports = [
   // Allow the use the console to print the messages
   new winston.transports.Console({
     format: winston.format.combine(
-        winston.format.colorize({ all: true }),
+      winston.format.colorize({ all: true }),
     ),
   }),
   // Allow to print all the error level messages inside the error.log file
