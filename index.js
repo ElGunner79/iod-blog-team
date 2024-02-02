@@ -4,6 +4,7 @@ const handlebars = require('express-handlebars');
 const { handleInvalidJson, handleUnauthorized, handleNotFound, handleAllOtherErrors } = require("./errors/errorHandler");
 const morganMiddleware = require("./logging/morganMiddleware");
 const Logger = require("./logging/logger");
+const userController = require("./controllers/userController");
 
 // Database
 const db = require("./db");
@@ -43,6 +44,8 @@ app.use("/api/posts", require("./routes/postRoutes"));
 app.use("/api/comments", require("./routes/commentRoutes"));
 // add like routes
 app.use("/api/likes", require("./routes/likeRoutes"));
+
+app.use('/users', require("./routes/viewUserRoutes"));
 
 app.get("/", (req, res) => {
   res.render('main', { layout: 'index' });
