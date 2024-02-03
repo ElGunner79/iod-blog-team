@@ -6,6 +6,8 @@ ARG DB_USER
 ARG DB_PASSWORD
 ARG DB_HOST
 ARG DB_PORT
+ARG DB_SSL
+ARG BASE_URL
 ARG PORT
 
 # Set environment variables during the build process
