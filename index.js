@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require('cors')
 const handlebars = require('express-handlebars');
 const { handleInvalidJson, handleUnauthorized, handleNotFound, handleAllOtherErrors } = require("./errors/errorHandler");
 const morganMiddleware = require("./logging/morganMiddleware");
@@ -13,6 +14,8 @@ const models = require("./models");
 models.init();
 
 const app = express();
+
+app.use(cors());
 
 app.set('view engine', 'hbs');
 
