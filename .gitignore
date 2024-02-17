@@ -1,4 +1,4 @@
 node_modules
 logs
-logs/*
-logs/.657eded027c747a81252963756a664a08a0b6994-audit.json
+coverage-report
+uploads/*

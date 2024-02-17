@@ -20,7 +20,7 @@ const commentController = require('../controllers/commentController');
  *      '500':
  *          description: Server error
  */
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const data = await commentController.getComments();
         res.send({ result: 200, data: data });
@@ -54,16 +54,16 @@ router.get('/', async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.get('/:id', idParamValidator, async (req, res) => {
+router.get('/:id', idParamValidator, async (req, res, next) => {
     try {
         let data;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).send({ errors: errors.array() });
+            return res.status(422).send({ result: 422, errors: errors.array() });
         } else {
             data = await commentController.getComment(req.params.id);
             if (!data) {
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Comment not found" });
             } else {
                 res.send({ result: 200, data: data });
             }
@@ -98,16 +98,16 @@ router.get('/:id', idParamValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.get('/:id/include', idParamValidator, async (req, res) => {
+router.get('/:id/include', idParamValidator, async (req, res, next) => {
     try {
         let data;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).send({ errors: errors.array() });
+            return res.status(422).send({ result: 422, errors: errors.array() });
         } else {
             data = await commentController.getCommentIncludeAll(req.params.id);
             if (!data) {
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Comment not found" });
             } else {
                 res.send({ result: 200, data: data });
             }
@@ -153,18 +153,23 @@ router.get('/:id/include', idParamValidator, async (req, res) => {
  *      '500':
  *         description: Server error
  */
-router.post('/', commentValidator, async (req, res) => {
+router.post('/', commentValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).send({ errors: errors.array() });
+            return res.status(422).send({ result: 422, errors: errors.array() });
         } else {
             // console.log(req.body);          
             const data = await commentController.createComment(req.body);
             res.send({ result: 200, data: data });
         }
     }catch (err) {
-        next(err);
+        // check SequelizeForeignKeyConstraintError
+        if (err.name === 'SequelizeForeignKeyConstraintError') {
+            res.status(422).send({ result: 422, errors: err.parent });
+        }else {
+            next(err);
+        }
     }  
     
 });
@@ -195,16 +200,16 @@ router.post('/', commentValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.get('/post/:id', idParamValidator, async (req, res) => {
+router.get('/post/:id', idParamValidator, async (req, res, next) => {
     try {
         let data;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).send({ errors: errors.array() });
+            return res.status(422).send({ result: 422, errors: errors.array() });
         } else {
             data = await commentController.getCommentsByPost(req.params.id);
             if (!data) {
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Comment not found" });
             } else {
                 res.send({ result: 200, data: data });
             }
@@ -239,12 +244,12 @@ router.get('/post/:id', idParamValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.get('/user/:id', idParamValidator, async (req, res) => {
+router.get('/user/:id', idParamValidator, async (req, res, next) => {
     try {
         let data;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).send({ errors: errors.array() });
+            return res.status(422).send({ result: 422, errors: errors.array() });
         } else {
             data = await commentController.getCommentsByUser(req.params.id);
             if (!data) {
@@ -304,15 +309,15 @@ router.get('/user/:id', idParamValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.put('/:id', commentUpdateValidator, async (req, res) => {
+router.put('/:id', commentUpdateValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).send({ errors: errors.array() });
+            return res.status(422).send({ result: 422, errors: errors.array() });
         } else {
             const data = await commentController.updateComment(req.params.id, req.body);
             if (data[0] === 0) {
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Comment not found" });
             } else {
                 res.send({ result: 200, data: data });
             }
@@ -347,16 +352,16 @@ router.put('/:id', commentUpdateValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.delete('/:id', idParamValidator, async (req, res) => {
+router.delete('/:id', idParamValidator, async (req, res, next) => {
     try {
         let data;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).send({ errors: errors.array() });
+            return res.status(422).send({ result: 422, errors: errors.array() });
         } else {
             data = await commentController.deleteComment(req.params.id);
             if (!data) {
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Comment not found" });
             } else {
                 res.send({ result: 200, data: data });
             }

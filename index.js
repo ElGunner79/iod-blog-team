@@ -1,11 +1,10 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require('cors')
+var cors = require('cors');
 const handlebars = require('express-handlebars');
 const { handleInvalidJson, handleUnauthorized, handleNotFound, handleAllOtherErrors } = require("./errors/errorHandler");
 const morganMiddleware = require("./logging/morganMiddleware");
 const Logger = require("./logging/logger");
-const userController = require("./controllers/userController");
 
 // Database
 const db = require("./db");
@@ -13,9 +12,7 @@ const db = require("./db");
 const models = require("./models");
 models.init();
 
-const app = express();
-
-app.use(cors());
+const app = require("./app");
 
 app.set('view engine', 'hbs');
 
@@ -25,10 +22,9 @@ app.engine('hbs', handlebars.engine({
   defaultLayout: 'main',
   extname: 'hbs'
 }));
-
-app.use(express.json());
 //Serves static files (we need it to import a css file)
 app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
 
 app.use(morganMiddleware);
 
@@ -48,7 +44,7 @@ app.use("/api/comments", require("./routes/commentRoutes"));
 // add like routes
 app.use("/api/likes", require("./routes/likeRoutes"));
 
-app.use('/users', require("./routes/viewUserRoutes"));
+app.use("/users", require("./routes/viewUserRoutes"));
 
 app.get("/", (req, res) => {
   res.render('main', { layout: 'index' });
@@ -63,5 +59,5 @@ app.use(handleAllOtherErrors);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  Logger.debug(`Example app listening on port ${port}!`);
+  Logger.debug(`IOD Blog Api listening on port ${port}!`);
 });

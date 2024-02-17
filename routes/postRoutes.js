@@ -21,7 +21,7 @@ const e = require('express');
  *      '500':
  *          description: Server error
  */
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try{
         const data = await postController.getPosts();
         res.send({ result: 200, data: data });
@@ -56,19 +56,19 @@ router.get('/', async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.get('/:id', idParamValidator, async (req, res) => {
+router.get('/:id', idParamValidator, async (req, res, next) => {
     try{
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             const data = await postController.getPost(req.params.id);
             if(!data){
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Post not found" });
             }
             else {
                 res.send({ result: 200, data: data });
             }
         } else {
-            res.status(422).json({errors: errors.array()});
+            res.status(422).json({result: 422, errors: errors.array()});
         }
     }catch(err){
         next(err);
@@ -100,19 +100,19 @@ router.get('/:id', idParamValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.get('/:id/include', idParamValidator, async (req, res) => {
+router.get('/:id/include', idParamValidator, async (req, res, next) => {
     try{
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             const data = await postController.getPostIncludeAll(req.params.id);
             if(!data){
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Post not found" });
             }
             else {
                 res.send({ result: 200, data: data });
             }
         } else {
-            res.status(422).json({errors: errors.array()});
+            res.status(422).json({result: 422, errors: errors.array()});
         }
     }catch(err){
         next(err);
@@ -145,19 +145,19 @@ router.get('/:id/include', idParamValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.get('/user/:id', idParamValidator, async (req, res) => {
+router.get('/user/:id', idParamValidator, async (req, res, next) => {
     try{
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             const data = await postController.getPostsByUser(req.params.id);
             if(!data){
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Post not found" });
             }
             else {
                 res.send({ result: 200, data: data });
             }
         } else {
-            res.status(422).json({errors: errors.array()});
+            res.status(422).json({result: 422, errors: errors.array()});
         }
     }catch(err){
         next(err);
@@ -200,23 +200,27 @@ router.get('/user/:id', idParamValidator, async (req, res) => {
  *       '500':
  *          description: Server error
  */
-router.post('/', postValidator, async (req, res) => {
+router.post('/', postValidator, async (req, res, next) => {
     try{
         // console.log(req.body);
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             const data = await postController.createPost(req.body);
             if(!data){
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Post not found" });
             } else {
                 res.send({ result: 200, data: data });
             }
         } else {
-            res.status(422).json({errors: errors.array()});
+            res.status(422).json({result: 422, errors: errors.array()});
         }
     }
     catch(err){
-        next(err);
+        if (err.name === 'SequelizeForeignKeyConstraintError') {
+            res.status(422).send({ errors: err.parent });
+        }else {
+            next(err);
+        }
     }
 });
 
@@ -264,14 +268,14 @@ router.post('/', postValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.put('/:id', postUpdateValidator, async (req, res) => {
+router.put('/:id', postUpdateValidator, async (req, res, next) => {
     try{
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             const data = await postController.updatePost(req.params.id, req.body);
             res.send({ result: 200, data: data });
         } else {
-            res.status(422).json({errors: errors.array()});
+            res.status(422).json({result: 422, errors: errors.array()});
         }
     }catch(err){
         next(err);
@@ -303,19 +307,19 @@ router.put('/:id', postUpdateValidator, async (req, res) => {
  *      '500':
  *          description: Server error
  */
-router.delete('/:id', idParamValidator, async (req, res) => {
+router.delete('/:id', idParamValidator, async (req, res, next) => {
     try{
         const errors = validationResult(req);
         if (errors.isEmpty()) {
             const data = await postController.deletePost(req.params.id);
             if(!data){
-                res.sendStatus(404);
+                res.status(404).json({ result: 404, message: "Post not found" });
             }
             else {
                 res.send({ result: 200, data: data });
             }
         } else {
-            res.status(422).json({errors: errors.array()});
+            res.status(422).json({result: 422, errors: errors.array()});
         }
     }catch(err){
         next(err);
